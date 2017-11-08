@@ -12,9 +12,10 @@ def get_path():
 def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            save_score(stats)
             os._exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event,ai_settings, screen, stats, play_button, ship, aliens, bullets)
+            check_keydown_events(event, ai_settings, screen, stats, sb, play_button, ship, aliens, bullets)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event,ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -23,11 +24,12 @@ def check_events(ai_settings, screen, stats, sb, play_button, ship, aliens, bull
 
 def check_play_button(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x,mouse_y):
     button_clicked = play_button.rect.collidepoint(mouse_x,mouse_y)
+    print(str(mouse_x)+' '+str(mouse_y))
     if button_clicked:
         start_game(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x,mouse_y)
 
 
-def start_game(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x,mouse_y):
+def start_game(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets, mouse_x=0,mouse_y=0):
 
     if not stats.game_active:
 
@@ -47,18 +49,26 @@ def start_game(ai_settings, screen, stats, sb, play_button, ship, aliens, bullet
         create_fleet(ai_settings, screen, ship, aliens)
         ship.center_ship()
 
+def save_score(stats):
 
-def check_keydown_events(event,ai_settings, screen, stats, play_button, ship, aliens, bullets):
+    with open('.score','w') as s:
+        s.write(str(stats.high_score))
+
+
+def check_keydown_events(event, ai_settings, screen, stats, sb, play_button, ship, aliens, bullets):
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
     elif event.key == pygame.K_LEFT:
         ship.moving_left = True
     elif event.key == pygame.K_q:
+        save_score(stats)
         sys.exit()
     elif event.key == pygame.K_SPACE:
         fire_bullet(ai_settings,screen,ship,bullets)
     elif event.key == pygame.K_p:
-        start_game(ai_settings, screen, stats, play_button, ship, aliens, bullets)
+        #mouse_x = 0
+        #mouse_y = 0
+        start_game(ai_settings, screen, stats, sb, play_button, ship, aliens, bullets)
 
 def check_keyup_events(event,ship):
     if event.key == pygame.K_RIGHT:

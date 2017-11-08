@@ -22,4 +22,5 @@ class GameStats():
             print("No file")
             with open('.score','w') as s:
                 s.write('0')
-                self.get_high_score()
+            high_score = 0
+            return high_score
